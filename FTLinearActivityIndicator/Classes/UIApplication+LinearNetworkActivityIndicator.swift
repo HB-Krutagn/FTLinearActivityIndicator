@@ -11,14 +11,18 @@ import UIKit
 extension UIApplication {
 	@objc final public class func configureLinearNetworkActivityIndicatorIfNeeded() {
 		#if !targetEnvironment(macCatalyst)
-		if #available(iOS 11.0, *) {
-			// detect iPhone X
-			if let window = shared.windows.first, window.safeAreaInsets.bottom > 0.0 {
-				if UIDevice.current.userInterfaceIdiom != .pad {
-					configureLinearNetworkActivityIndicator()
-				}
-			}
-		}
+        if #available(iOS 11.0, *) {
+            // detect iPhone X
+            if let window = shared.windows.first, window.safeAreaInsets.bottom > 0.0 {
+                if UIDevice.current.userInterfaceIdiom != .pad {
+                    configureLinearNetworkActivityIndicator()
+                }
+            } else if #available(iOS 13.0, *) {
+                if UIDevice.current.userInterfaceIdiom != .pad {
+                    configureLinearNetworkActivityIndicator()
+                }
+            }
+        }
 		#endif
 	}
 
@@ -65,7 +69,17 @@ extension UIApplication {
 				indicatorWindow?.windowLevel = UIWindow.Level.statusBar + 1
 				indicatorWindow?.isUserInteractionEnabled = false
 
-				let indicator = FTLinearActivityIndicator(frame: CGRect(x: indicatorWindow!.frame.width - 74, y: 6, width: 44, height: 4))
+                var indicator = FTLinearActivityIndicator()
+                if #available(iOS 11.0, *) {
+                    if let window = UIApplication.shared.windows.first, window.safeAreaInsets.bottom > 0.0 {
+                        indicator = FTLinearActivityIndicator(frame: CGRect(x: indicatorWindow!.frame.width - 76, y: 6, width: 40, height: 4))
+                    }else{
+                        indicator = FTLinearActivityIndicator(frame: CGRect(x: indicatorWindow!.frame.width - 30 , y: 1, width: 20, height: 2.5))
+                    }
+                } else {
+                    // Fallback on earlier versions
+                    indicator = FTLinearActivityIndicator(frame: CGRect(x: indicatorWindow!.frame.width - 30 , y: 1, width: 20, height: 2.5))
+                }
 				indicator.isUserInteractionEnabled = false
 				indicator.hidesWhenStopped = false
 				indicator.startAnimating()
@@ -74,7 +88,8 @@ extension UIApplication {
 		}
 		guard let indicator = indicatorWindow?.subviews.first as? FTLinearActivityIndicator else {return}
         if #available(iOS 13.0, *) {
-            indicator.tintColor = indicatorWindow?.windowScene?.statusBarManager?.statusBarStyle == .lightContent ? .white : .black
+            indicator.tintColor = statusBarStyle == .default ? UIColor.black : UIColor.white
+//            indicator.tintColor = indicatorWindow?.windowScene?.statusBarManager?.statusBarStyle == .lightContent ? .white : .black
         } else {
             indicator.tintColor = statusBarStyle == .default ? UIColor.black : UIColor.white
         }
