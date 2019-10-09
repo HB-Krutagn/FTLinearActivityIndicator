@@ -66,7 +66,7 @@ extension UIApplication {
 		if visible {
 			if indicatorWindow == nil {
 				indicatorWindow = UIWindow(frame: statusBarFrame)
-				indicatorWindow?.windowLevel = UIWindow.Level.statusBar + 1
+				indicatorWindow?.windowLevel = UIWindow.Level.statusBar //+ 1
 				indicatorWindow?.isUserInteractionEnabled = false
 
                 var indicator = FTLinearActivityIndicator()
@@ -88,8 +88,8 @@ extension UIApplication {
 		}
 		guard let indicator = indicatorWindow?.subviews.first as? FTLinearActivityIndicator else {return}
         if #available(iOS 13.0, *) {
-            indicator.tintColor = statusBarStyle == .default ? UIColor.black : UIColor.white
-//            indicator.tintColor = indicatorWindow?.windowScene?.statusBarManager?.statusBarStyle == .lightContent ? .white : .black
+//            indicator.tintColor = statusBarStyle == .default ? UIColor.black : UIColor.white
+            indicator.tintColor = indicatorWindow?.windowScene?.statusBarManager?.statusBarStyle == .lightContent ? .white : .black
         } else {
             indicator.tintColor = statusBarStyle == .default ? UIColor.black : UIColor.white
         }
