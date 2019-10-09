@@ -88,8 +88,7 @@ extension UIApplication {
 		}
 		guard let indicator = indicatorWindow?.subviews.first as? FTLinearActivityIndicator else {return}
         if #available(iOS 13.0, *) {
-            indicator.tintColor = statusBarStyle == .default ? UIColor.black : UIColor.white
-//            indicator.tintColor = indicatorWindow?.windowScene?.statusBarManager?.statusBarStyle == .lightContent ? .white : .black
+            indicator.tintColor = .black//indicatorWindow?.windowScene?.statusBarManager?.statusBarStyle == .lightContent ? .white : .black
         } else {
             indicator.tintColor = statusBarStyle == .default ? UIColor.black : UIColor.white
         }
